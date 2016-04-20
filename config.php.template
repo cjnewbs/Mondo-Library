@@ -1,0 +1,14 @@
+<?php
+/**
+ * Holds config data
+ */
+
+$mondo->_clientID = 'your_oauth_client_id';
+
+$mondo->_redirectURI = 'http://your/redirect/uri';
+
+$mondo->_clientSecret = 'your_client_secret';
+
+$mondo->_authPageURI = 'https://auth.getmondo.co.uk/?';
+
+$mondo->_tokenExchangeURI = 'https://api.getmondo.co.uk/oauth2/token';
