@@ -12,28 +12,24 @@ $mondo = new mondo;
 require_once 'config.php';
 // everything above this line should be present in all pages
 
-
-$mondo->_state = $_SESSION['state'];
-
-$mondo->_incomingState = $_GET['state'];
-
-$mondo->_tempToken = $_GET['code'];
+$mondo->saveSession();
 
 if ($mondo->_state === $mondo->_incomingState)
 {
     
     $post_data = "grant_type=authorization_code&client_id=" . urlencode($mondo->_clientID) . "&client_secret=" . urlencode($mondo->_clientSecret) . "&redirect_uri=" . urlencode($mondo->_redirectURI) . "&code=" . urlencode($mondo->_tempToken);
     
-    $url = 'https://api.getmondo.co.uk/oauth2/token';
-
     $response = $mondo->get($mondo->_tokenExchangeURI, null, $post_data);
-
-
+    
     if (json_decode($response) === null){
         echo $response;
     }else {
-        echo '<pre>';
-        var_dump(json_decode($response));
+        $mondo_values = json_decode($response, true);
+        $_SESSION['access_token'] = $mondo_values['access_token'];
+        $_SESSION['refresh_token'] = $mondo_values['refresh_token'];
+        $_SESSION['user_id'] = $mondo_values['user_id'];
+        
+        echo '<p><a href="example.php">Get Account Info</a></p>';
     }
 
 } else {

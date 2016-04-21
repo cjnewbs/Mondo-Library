@@ -1,6 +1,6 @@
 <?php
 Class curl {
-
+//all this class + method is responsible for is abstracting the curl process away from the mondo library
     public $_rootCApath = '';
 
     public function get($endpoint, $bearer_token = null, $post_data = null){
@@ -18,13 +18,13 @@ Class curl {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
-        if (strlen($bearer_token) == true){
-            $bearer_header ="Authorization: Bearer $bearer_token";
+        if (!is_null($bearer_token)){
+            $bearer_header = array("Authorization: Bearer $bearer_token");
             
             curl_setopt($ch, CURLOPT_HTTPHEADER, $bearer_header);
         }
-        
-        if ($post_data == true){
+        if (!is_null($post_data)){
+            error_log('post data present');
             // tell curl to expect post fields
             curl_setopt($ch, CURLOPT_POST, true);
 
