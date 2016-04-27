@@ -22,14 +22,18 @@ if ($mondo->_state === $mondo->_incomingState)
     $response = $mondo->get($mondo->_tokenExchangeURI, null, $post_data);
     
     if (json_decode($response) === null){
-        echo $response;
+        error_log('T-xchange response was invalid json');
     }else {
+        error_log('T-xchange was valid json');
         $mondo_values = json_decode($response, true);
         $_SESSION['access_token'] = $mondo_values['access_token'];
+        $mondo->_accessToken = $_SESSION['access_token'];
         $_SESSION['refresh_token'] = $mondo_values['refresh_token'];
         $_SESSION['user_id'] = $mondo_values['user_id'];
-        
-        echo '<p><a href="example.php">Get Account Info</a></p>';
+        if ($mondo->checkAuthStatus() == true){
+            header("Location: http://localhost/mondo/example.php");
+            exit('Key exchange successful, redirecting...');
+        }
     }
 
 } else {

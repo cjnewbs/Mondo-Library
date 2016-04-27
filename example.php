@@ -20,13 +20,28 @@ $mondo->loadSession();
     <title>Connect To Mondo</title>
 </head>
 <body>
-<div class="container" style="text-align: center; padding-top: 15%;">
-    <p><?php echo $mondo->checkAuthStatus() ?></p>
+<div class="container">
+    <p><a href="logout.php">Log Out</a></p>
     <p>Account Name: <?php echo $mondo->getAccountName(); ?></p>
     <p>Account ID: <?php echo $mondo->getAccountID(); ?></p>
     <p>Balance: <?php echo $mondo->getBalance(); ?></p>
     <p>Today you spent: <?php echo $mondo->getTodaySpend(); ?></p>
     <p>Your account was created on: <?php echo $mondo->getAccountCreated() ?></p>
+    <p>Your recent transactions:</p>
 </div>
+<table>
+    <thead>
+        <tr><th>Transaction ID</th><th>Description</th><th>Amount</th></tr>
+    </thead>
+        <?php
+        $transactions = $mondo->getTransactionList();
+        foreach ($transactions['transactions'] as $item) {
+            echo '<tr>';
+            echo '<td>' . $item['id'] . '</td>';
+            echo '<td>' . $item['description'] . '</td>';
+            echo '<td>' . number_format(($item['amount']/100), 2, '.', ',') . '</td>';
+            echo "</tr>\n";
+        }
+        ?></table>
 </body>
 </html>

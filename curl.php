@@ -1,9 +1,11 @@
 <?php
-Class curl {
+Class curl
+{
 //all this class + method is responsible for is abstracting the curl process away from the mondo library
     public $_rootCApath = '';
 
-    public function get($endpoint, $bearer_token = null, $post_data = null){
+    public function get($endpoint, $bearer_token = null, $post_data = null, $DELETE = false)
+    {
 
         $ch = curl_init();
 
@@ -18,19 +20,25 @@ Class curl {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
-        if (!is_null($bearer_token)){
+        if (!is_null($bearer_token)) {
             $bearer_header = array("Authorization: Bearer $bearer_token");
-            
+
             curl_setopt($ch, CURLOPT_HTTPHEADER, $bearer_header);
         }
-        if (!is_null($post_data)){
-            error_log('post data present');
+        
+        if (!is_null($post_data))
+        {
             // tell curl to expect post fields
             curl_setopt($ch, CURLOPT_POST, true);
 
             // This is the fields to post in the form of an array.
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
 
+        }
+
+        //this was added specifically for the deleteHook() method as it requires a DELETE HTTP request
+        if ($DELETE === true) {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
         }
         
         // CA root keys for verification
@@ -47,6 +55,7 @@ Class curl {
 
         }
 
+        //$this->_statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         return $response;
     }
